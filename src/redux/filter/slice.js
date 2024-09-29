@@ -7,8 +7,8 @@ export const selectFilterEquipment = (state) => state.filters.equipment;
 const filtersSlice = createSlice({
   name: "filters",
   initialState: {
-    location: "",
-    form: null,
+    location: "", 
+    form: "", 
     equipment: {
       AC: false,
       automatic: false,
@@ -28,8 +28,19 @@ const filtersSlice = createSlice({
       const equipmentType = action.payload;
       state.equipment[equipmentType] = !state.equipment[equipmentType];
     },
+    resetFilters(state) { 
+      state.location = "";
+      state.form = "";
+      state.equipment = {
+        AC: false,
+        automatic: false,
+        kitchen: false,
+        tv: false,
+        bathroom: false,
+      };
+    },
   },
 });
 
-export const { setLocation, setForm, toggleEquipment } = filtersSlice.actions;
+export const { setLocation, setForm, toggleEquipment, resetFilters } = filtersSlice.actions;
 export const filtersReducer = filtersSlice.reducer;

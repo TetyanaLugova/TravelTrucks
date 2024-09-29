@@ -34,7 +34,6 @@ export default function Filter() {
     form: "",
   });
 
-  // Виділення червоною рамкою для вибраних елементів
   const isSelected = (value, group) => {
     if (group === "form") return searchParams.form === value;
     if (group === "equipment") return searchParams.equipment[value] === true;
@@ -46,28 +45,30 @@ export default function Filter() {
   };
 
   const handleFormChange = (formType) => {
-    setSearchParams({ ...searchParams, form: formType });
+    setSearchParams((prev) => ({ ...prev, form: formType }));
   };
 
   const handleEquipmentToggle = (equipmentType) => {
-    const updatedEquipment = {
-      ...searchParams.equipment,
-      [equipmentType]: !searchParams.equipment[equipmentType],
-    };
-    setSearchParams({ ...searchParams, equipment: updatedEquipment });
+    setSearchParams((prev) => ({
+      ...prev,
+      equipment: {
+        ...prev.equipment,
+        [equipmentType]: !prev.equipment[equipmentType],
+      },
+    }));
   };
 
   const handleSearch = () => {
     dispatch(setLocation(searchParams.location));
     dispatch(setForm(searchParams.form));
 
+    
     Object.keys(searchParams.equipment).forEach((key) => {
       if (searchParams.equipment[key]) {
         dispatch(toggleEquipment(key));
       }
     });
 
-    console.log("Фільтрація з параметрами: ", searchParams);
   };
 
   return (
@@ -85,84 +86,46 @@ export default function Filter() {
       <div>
         <h4 className={css.title}>Vehicle Equipment</h4>
         <ul className={css.wrapList}>
-          <li
-            className={`${css.item} ${
-              isSelected("AC", "equipment") ? css.selected : ""
-            }`}
-            onClick={() => handleEquipmentToggle("AC")}
-          >
-            <FiWind className={css.icon} />
-            <p>AC</p>
-          </li>
-          <li
-            className={`${css.item} ${
-              isSelected("automatic", "equipment") ? css.selected : ""
-            }`}
-            onClick={() => handleEquipmentToggle("automatic")}
-          >
-            <BsDiagram3 className={css.icon} />
-            <p>Automatic</p>
-          </li>
-          <li
-            className={`${css.item} ${
-              isSelected("kitchen", "equipment") ? css.selected : ""
-            }`}
-            onClick={() => handleEquipmentToggle("kitchen")}
-          >
-            <BsCupHot className={css.icon} />
-            <p>Kitchen</p>
-          </li>
-          <li
-            className={`${css.item} ${
-              isSelected("tv", "equipment") ? css.selected : ""
-            }`}
-            onClick={() => handleEquipmentToggle("tv")}
-          >
-            <MdOutlineTv className={css.icon} />
-            <p>TV</p>
-          </li>
-          <li
-            className={`${css.item} ${
-              isSelected("bathroom", "equipment") ? css.selected : ""
-            }`}
-            onClick={() => handleEquipmentToggle("bathroom")}
-          >
-            <BsDroplet className={css.icon} />
-            <p>Bathroom</p>
-          </li>
+          {["AC", "automatic", "kitchen", "tv", "bathroom"].map((item) => (
+            <li
+              key={item}
+              className={`${css.item} ${
+                isSelected(item, "equipment") ? css.selected : ""
+              }`}
+              onClick={() => handleEquipmentToggle(item)}
+            >
+              {item === "AC" && <FiWind className={css.icon} />}
+              {item === "automatic" && <BsDiagram3 className={css.icon} />}
+              {item === "kitchen" && <BsCupHot className={css.icon} />}
+              {item === "tv" && <MdOutlineTv className={css.icon} />}
+              {item === "bathroom" && <BsDroplet className={css.icon} />}
+              <p>{item.charAt(0).toUpperCase() + item.slice(1)}</p>
+            </li>
+          ))}
         </ul>
       </div>
 
       <div>
-        <h4 className={css.title}>Vehicle type</h4>
+        <h4 className={css.title}>Vehicle Type</h4>
         <ul className={css.wrapList}>
-          <li
-            className={`${css.item} ${
-              isSelected("van", "form") ? css.selected : ""
-            }`}
-            onClick={() => handleFormChange("van")}
-          >
-            <BsGrid1X2 className={css.icon} />
-            <p>Van</p>
-          </li>
-          <li
-            className={`${css.item} ${
-              isSelected("alcove", "form") ? css.selected : ""
-            }`}
-            onClick={() => handleFormChange("alcove")}
-          >
-            <BsGrid className={css.icon} />
-            <p className={css.textItem}>Fully Integrated</p>
-          </li>
-          <li
-            className={`${css.item} ${
-              isSelected("integrated", "form") ? css.selected : ""
-            }`}
-            onClick={() => handleFormChange("integrated")}
-          >
-            <BsGrid3X3Gap className={css.icon} />
-            <p>Alcove</p>
-          </li>
+          {[
+            { display: "Van", backend: "panelTruck" },
+            { display: "Fully Integrated", backend: "fullyIntegrated" },
+            { display: "Alcove", backend: "alcove" },
+          ].map(({ display, backend }) => (
+            <li
+              key={backend}
+              className={`${css.item} ${
+                isSelected(backend, "form") ? css.selected : ""
+              }`}
+              onClick={() => handleFormChange(backend)}
+            >
+              {backend === "panelTruck" && <BsGrid1X2 className={css.icon} />}
+              {backend === "fullyIntegrated" && <BsGrid className={css.icon} />}
+              {backend === "alcove" && <BsGrid3X3Gap className={css.icon} />}
+              <p className={css.textItem}>{display}</p>
+            </li>
+          ))}
         </ul>
       </div>
 
