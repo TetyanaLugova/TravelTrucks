@@ -5,12 +5,12 @@ import css from "./Catalog.module.css";
 
 export default function CatalogPage() {
   return (
-    <>
+    <div className={css.wrapper}>
       <Header />
       <div className={css.wrap}>
         <Filter />
         <Catalog />
       </div>
-    </>
+    </div>
   );
 }

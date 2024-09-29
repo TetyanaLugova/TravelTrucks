@@ -1,10 +1,12 @@
 import Details from "../../components/Details/Details";
 import Header from "../../components/Header/Header";
+import css from "./CamperDetails.module.css";
+
 export default function CamperDetails() {
   return (
-    <div>
+    <div className={css.wrapper}>
       <Header />
-      <Details  />
+      <Details />
     </div>
   );
 }

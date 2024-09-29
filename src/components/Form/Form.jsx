@@ -6,7 +6,7 @@ export default function BookingForm() {
   const validationSchema = Yup.object({
     name: Yup.string().required("Name is required"),
     email: Yup.string().email("Invalid email").required("Email is required"),
-    bookingDate: Yup.date().required("Booking date is required"),
+    bookingDate: Yup.string().required("Booking date is required"),
     comment: Yup.string(),
   });
 
