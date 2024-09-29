@@ -16,9 +16,15 @@ export default function Catalog() {
   const form = useSelector(selectFilterForm);
   const equipment = useSelector(selectFilterEquipment);
   const [page, setPage] = useState(1);
-  const [items, setItems] = useState([]); // Локальний стан для зберігання кемперів
-  const [displayCount, setDisplayCount] = useState(4); // Кількість карток для відображення
-  const [filteredItems, setFilteredItems] = useState([]); // Локальний стан для зберігання відфільтрованих карток
+  const [items, setItems] = useState([]);
+  const [displayCount, setDisplayCount] = useState(4);
+  const [filteredItems, setFilteredItems] = useState([]);
+
+  useEffect(() => {
+    fetchItems();
+    const savedFavorites = JSON.parse(localStorage.getItem("favorites")) || [];
+    savedFavorites.forEach((id) => dispatch(addFavorite(id)));
+  }, []);
 
   const fetchItems = async () => {
     try {
@@ -26,8 +32,8 @@ export default function Catalog() {
         "https://66b1f8e71ca8ad33d4f5f63e.mockapi.io/campers"
       );
       setItems(response.data.items);
-      setFilteredItems(response.data.items); // Спочатку всі картки відображаються
-      setDisplayCount(4); // Скинути кількість карток до 4
+      setFilteredItems(response.data.items);
+      setDisplayCount(4);
     } catch (error) {
       console.error("Error fetching campers: ", error);
     }
@@ -37,8 +43,8 @@ export default function Catalog() {
     return items.filter((item) => {
       const matchesLocation = location
         ? item.location.includes(location)
-        : true; // Перевірка на пусте значення
-      const matchesForm = form ? item.form === form : true; // Перевірка на пусте значення
+        : true;
+      const matchesForm = form ? item.form === form : true;
       const matchesEquipment = Object.keys(equipment).every((equipmentType) => {
         return !equipment[equipmentType] || item[equipmentType];
       });
@@ -48,24 +54,23 @@ export default function Catalog() {
   };
 
   useEffect(() => {
-    fetchItems(); // Завантажити дані при старті
-  }, []);
-
-  useEffect(() => {
-    const newFilteredItems = filterItems(items); // Фільтрування карток на основі значень фільтрів
+    const newFilteredItems = filterItems(items);
     setFilteredItems(newFilteredItems);
-    setDisplayCount(4); // Скинути кількість карток до 4
+    setDisplayCount(4);
   }, [location, form, equipment, items]);
 
   const handleLoadMore = () => {
-    setDisplayCount((prevCount) => prevCount + 4); // Додати ще 4 картки
+    setDisplayCount((prevCount) => prevCount + 4);
   };
 
   const favorites = useSelector((state) => state.catalog.favorites);
 
+  useEffect(() => {
+    localStorage.setItem("favorites", JSON.stringify(favorites));
+  }, [favorites]);
+
   return (
     <div className={css.wrap}>
-      {/* Відображення карток кемперів */}
       {filteredItems.slice(0, displayCount).map((item) => (
         <Card
           key={item.id}
@@ -83,7 +88,7 @@ export default function Catalog() {
       )}
 
       {filteredItems.length === 0 && (
-        <p>No campers found for the selected filters.</p> // Повідомлення, якщо нічого не знайдено
+        <p>No campers found for the selected filters.</p>
       )}
     </div>
   );

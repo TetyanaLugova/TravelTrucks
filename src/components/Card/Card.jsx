@@ -27,12 +27,18 @@ export default function Card({
           <div className={css.wrapPrice}>
             <p className={css.title}>
               €
-              {item.price.toLocaleString("uk-UA", {
-                minimumFractionDigits: 2,
-              })}{" "}
+              {item.price
+                .toLocaleString("uk-UA", {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })
+                .replace(",", ".")}
             </p>
             {isFavorite ? (
-              <IoMdHeart className={css.iconHeart} onClick={onRemoveFavorite} />
+              <IoMdHeart
+                className={`${css.iconHeart} ${css.activeHeart}`}
+                onClick={onRemoveFavorite}
+              />
             ) : (
               <IoMdHeartEmpty
                 className={css.iconHeart}

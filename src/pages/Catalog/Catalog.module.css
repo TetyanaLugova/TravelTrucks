@@ -1,7 +1,9 @@
-.wrap {
-  display: flex;
-  margin-left: 62px;
-  margin-right: 62px;
-  gap: 62px;
-  margin-top: 48px;
+@media (min-width: 1440px) {
+  .wrap {
+    display: flex;
+    margin-left: 62px;
+    margin-right: 62px;
+    gap: 62px;
+    margin-top: 48px;
+  }
 }
