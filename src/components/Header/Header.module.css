@@ -1,0 +1,17 @@
+@media (min-width: 1440px) {
+  .wrap {
+    display: flex;
+    /* border-bottom: 1px solid var(--badges); */
+    padding: 0 64px;
+    /* width: 1440px; */
+    /* height: 72px; */
+    align-items: center;
+    background-color: #f7f7f7;
+  }
+  .logo {
+    height: 15px;
+    width: 136px;
+    padding-top: 24px;
+    padding-bottom: 24px;
+  }
+}

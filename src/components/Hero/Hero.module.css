@@ -1,0 +1,42 @@
+@media (min-width: 1440px) {
+  .background {
+    background-image: url(../../img/background@1x.png),
+      url(../../img/background@2x.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+    min-height: 696px;
+    min-width: 1440px;
+  }
+  .wrap {
+    margin-left: 64px;
+    padding-top: 260px;
+  }
+  .title {
+    font-weight: 600;
+    font-size: 48px;
+    line-height: 67%;
+    color: #f7f7f7;
+  }
+  .text {
+    font-weight: 600;
+    font-size: 24px;
+    line-height: 133%;
+    color: #f7f7f7;
+    margin-top: 14px;
+  }
+  .btn {
+    font-family: "Inter", sans-serif;
+    border-radius: 200px;
+    padding: 16px 50px;
+    background-color: #e44848;
+    font-weight: 500;
+    font-size: 16px;
+    color: #f7f7f7;
+    margin-top: 38px;
+    border: none;
+    cursor: pointer;
+  }
+  .btn:hover {
+    background-color: #d84343;
+  }
+}
