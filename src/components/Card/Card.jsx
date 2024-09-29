@@ -1,49 +1,42 @@
 import { Link } from "react-router-dom";
 import css from "./Card.module.css";
-import { IoMdHeartEmpty } from "react-icons/io";
+import { IoMdHeartEmpty, IoMdHeart } from "react-icons/io"; // Додано заповнене серце
 import { CiMap } from "react-icons/ci";
-import { AiFillStar } from "react-icons/ai"; // Іконка зірки
-import { FiWind } from "react-icons/fi"; // Іконка для AC
-import { BsCupHot, BsDiagram3, BsDroplet } from "react-icons/bs"; // Іконки для Kitchen, Automatic, Bathroom
-import { MdOutlineTv } from "react-icons/md"; // Іконка для TV
+import { AiFillStar } from "react-icons/ai";
+import { FiWind } from "react-icons/fi";
+import { BsCupHot, BsDiagram3, BsDroplet } from "react-icons/bs";
+import { MdOutlineTv } from "react-icons/md";
 import { BsFillFuelPumpFill } from "react-icons/bs";
 
 export default function Card({
-  camper,
+  item,
   isFavorite,
-  onAddToFavorites,
-  onRemoveFromFavorites,
+  onAddFavorite,
+  onRemoveFavorite,
 }) {
-  const reviewCount = camper.reviews ? camper.reviews.length : 0;
+  const reviewCount = item.reviews ? item.reviews.length : 0;
 
   return (
     <div className={css.cardWrap}>
-      {camper.gallery && camper.gallery.length > 0 && (
-        <img
-          src={camper.gallery[0].thumb}
-          alt={camper.name}
-          className={css.img}
-        />
+      {item.gallery && item.gallery.length > 0 && (
+        <img src={item.gallery[0].thumb} alt={item.name} className={css.img} />
       )}
       <div>
         <div className={css.wrapTitle}>
-          <h3 className={css.title}>{camper.name}</h3>
+          <h3 className={css.title}>{item.name}</h3>
           <div className={css.wrapPrice}>
             <p className={css.title}>
               €
-              {camper.price.toLocaleString("uk-UA", {
+              {item.price.toLocaleString("uk-UA", {
                 minimumFractionDigits: 2,
               })}{" "}
             </p>
             {isFavorite ? (
-              <IoMdHeartEmpty
-                className={css.iconHeart}
-                onClick={onRemoveFromFavorites}
-              />
+              <IoMdHeart className={css.iconHeart} onClick={onRemoveFavorite} />
             ) : (
               <IoMdHeartEmpty
                 className={css.iconHeart}
-                onClick={onAddToFavorites}
+                onClick={onAddFavorite}
               />
             )}
           </div>
@@ -52,57 +45,56 @@ export default function Card({
           <div className={css.rating}>
             <AiFillStar className={css.starIcon} />
             <span>
-              {camper.rating} ({reviewCount}{" "}
+              {item.rating} ({reviewCount}{" "}
               {reviewCount === 1 ? "review" : "reviews"})
             </span>
           </div>
           <div className={css.location}>
             <CiMap className={css.icon} />
-            <p>{camper.location}</p>
+            <p>{item.location}</p>
           </div>
         </div>
 
-        <p className={css.textInfo}>{camper.description}</p>
+        <p className={css.textInfo}>{item.description}</p>
 
-        {/* Перелік обраних опцій з іконками */}
         <div className={css.option}>
-          {camper.transmission === "automatic" && (
+          {item.transmission === "automatic" && (
             <div className={css.optionItem}>
               <BsDiagram3 className={css.icon} />
               <p>Automatic</p>
             </div>
           )}
-          {camper.engine === "diesel" && (
+          {item.engine === "diesel" && (
             <div className={css.optionItem}>
               <BsFillFuelPumpFill className={css.icon} />
               <p>Diesel</p>
             </div>
           )}
-          {camper.engine === "petrol" && (
+          {item.engine === "petrol" && (
             <div className={css.optionItem}>
               <BsFillFuelPumpFill className={css.icon} />
               <p>Petrol</p>
             </div>
           )}
-          {camper.AC && (
+          {item.AC && (
             <div className={css.optionItem}>
               <FiWind className={css.icon} />
               <p>AC</p>
             </div>
           )}
-          {camper.bathroom && (
+          {item.bathroom && (
             <div className={css.optionItem}>
               <BsDroplet className={css.icon} />
               <p>Bathroom</p>
             </div>
           )}
-          {camper.kitchen && (
+          {item.kitchen && (
             <div className={css.optionItem}>
               <BsCupHot className={css.icon} />
               <p>Kitchen</p>
             </div>
           )}
-          {camper.TV && (
+          {item.TV && (
             <div className={css.optionItem}>
               <MdOutlineTv className={css.icon} />
               <p>TV</p>
@@ -111,11 +103,7 @@ export default function Card({
         </div>
 
         <div>
-          <Link
-            className={css.btn}
-            to={`/catalog/${camper.id}`}
-            target="_blank"
-          >
+          <Link className={css.btn} to={`/catalog/${item.id}`}>
             Show more
           </Link>
         </div>

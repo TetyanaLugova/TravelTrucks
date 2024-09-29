@@ -16,44 +16,49 @@ export default function Catalog() {
   const form = useSelector(selectFilterForm);
   const equipment = useSelector(selectFilterEquipment);
   const [page, setPage] = useState(1);
-  const [campers, setCampers] = useState([]); // локальний стан для зберігання кемперів
-  const [isFilterActive, setIsFilterActive] = useState(false);
+  const [items, setItems] = useState([]); // Локальний стан для зберігання кемперів
+  const [displayCount, setDisplayCount] = useState(4); // Кількість карток для відображення
+  const [filteredItems, setFilteredItems] = useState([]); // Локальний стан для зберігання відфільтрованих карток
 
-  const fetchCampers = async () => {
+  const fetchItems = async () => {
     try {
-      const params = isFilterActive
-        ? {
-            ...(location && { location }),
-            ...(form && { form }),
-            ...(Object.keys(equipment).length > 0 && {
-              ...Object.fromEntries(
-                Object.entries(equipment).filter(([key, value]) => value)
-              ),
-            }),
-            page,
-            limit: 4,
-          }
-        : { page, limit: 4 }; // без фільтрів
-
       const response = await axios.get(
-        "https://66b1f8e71ca8ad33d4f5f63e.mockapi.io/campers",
-        { params }
+        "https://66b1f8e71ca8ad33d4f5f63e.mockapi.io/campers"
       );
-
-      setCampers((prevCampers) => [...prevCampers, ...response.data.items]);
+      setItems(response.data.items);
+      setFilteredItems(response.data.items); // Спочатку всі картки відображаються
+      setDisplayCount(4); // Скинути кількість карток до 4
     } catch (error) {
       console.error("Error fetching campers: ", error);
     }
   };
 
+  const filterItems = (items) => {
+    return items.filter((item) => {
+      const matchesLocation = location
+        ? item.location.includes(location)
+        : true; // Перевірка на пусте значення
+      const matchesForm = form ? item.form === form : true; // Перевірка на пусте значення
+      const matchesEquipment = Object.keys(equipment).every((equipmentType) => {
+        return !equipment[equipmentType] || item[equipmentType];
+      });
+
+      return matchesLocation && matchesForm && matchesEquipment;
+    });
+  };
+
   useEffect(() => {
-    setPage(1); // Починаємо з першої сторінки після зміни фільтрів
-    setCampers([]); // Очищуємо список кемперів перед новим пошуком
-    fetchCampers(); // Завантажуємо нові дані після зміни фільтрів
-  }, [location, form, equipment, isFilterActive]);
+    fetchItems(); // Завантажити дані при старті
+  }, []);
+
+  useEffect(() => {
+    const newFilteredItems = filterItems(items); // Фільтрування карток на основі значень фільтрів
+    setFilteredItems(newFilteredItems);
+    setDisplayCount(4); // Скинути кількість карток до 4
+  }, [location, form, equipment, items]);
 
   const handleLoadMore = () => {
-    setPage((prevPage) => prevPage + 1); // збільшення сторінки для додаткового завантаження
+    setDisplayCount((prevCount) => prevCount + 4); // Додати ще 4 картки
   };
 
   const favorites = useSelector((state) => state.catalog.favorites);
@@ -61,19 +66,25 @@ export default function Catalog() {
   return (
     <div className={css.wrap}>
       {/* Відображення карток кемперів */}
-      {campers.map((camper) => (
+      {filteredItems.slice(0, displayCount).map((item) => (
         <Card
-          key={camper.id}
-          camper={camper}
-          isFavorite={favorites.includes(camper.id)}
-          onAddFavorite={() => dispatch(addFavorite(camper.id))}
-          onRemoveFavorite={() => dispatch(removeFavorite(camper.id))}
+          key={item.id}
+          item={item}
+          isFavorite={favorites.includes(item.id)}
+          onAddFavorite={() => dispatch(addFavorite(item.id))}
+          onRemoveFavorite={() => dispatch(removeFavorite(item.id))}
         />
       ))}
 
-      <button className={css.btn} onClick={handleLoadMore}>
-        Load More
-      </button>
+      {displayCount < filteredItems.length && (
+        <button className={css.btn} onClick={handleLoadMore}>
+          Load More
+        </button>
+      )}
+
+      {filteredItems.length === 0 && (
+        <p>No campers found for the selected filters.</p> // Повідомлення, якщо нічого не знайдено
+      )}
     </div>
   );
 }
