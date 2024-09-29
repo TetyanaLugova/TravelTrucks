@@ -62,13 +62,11 @@ export default function Filter() {
     dispatch(setLocation(searchParams.location));
     dispatch(setForm(searchParams.form));
 
-    
     Object.keys(searchParams.equipment).forEach((key) => {
       if (searchParams.equipment[key]) {
         dispatch(toggleEquipment(key));
       }
     });
-
   };
 
   return (
@@ -86,7 +84,7 @@ export default function Filter() {
       <div>
         <h4 className={css.title}>Vehicle Equipment</h4>
         <ul className={css.wrapList}>
-          {["AC", "automatic", "kitchen", "tv", "bathroom"].map((item) => (
+          {["AC", "automatic", "kitchen", "TV", "bathroom"].map((item) => (
             <li
               key={item}
               className={`${css.item} ${
@@ -97,7 +95,7 @@ export default function Filter() {
               {item === "AC" && <FiWind className={css.icon} />}
               {item === "automatic" && <BsDiagram3 className={css.icon} />}
               {item === "kitchen" && <BsCupHot className={css.icon} />}
-              {item === "tv" && <MdOutlineTv className={css.icon} />}
+              {item === "TV" && <MdOutlineTv className={css.icon} />}
               {item === "bathroom" && <BsDroplet className={css.icon} />}
               <p>{item.charAt(0).toUpperCase() + item.slice(1)}</p>
             </li>
